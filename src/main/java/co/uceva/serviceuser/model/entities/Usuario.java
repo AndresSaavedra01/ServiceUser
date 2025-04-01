@@ -38,7 +38,7 @@ public class Usuario {
     @Max(value = 9999999999L, message = "La cédula no puede tener más de 10 dígitos")
     private Long cedula; // También considera que sea null-safe
 
-    @NotEmpty(message = "El telefono es obligatorio")
+    @NotNull(message = "El telefono es obligatorio")
     @Min(value = 1000000L, message = "El teléfono debe tener al menos 7 dígitos")
     @Max(value = 999999999999999L, message = "El teléfono no puede tener más de 15 dígitos")
     @Column(nullable = false)

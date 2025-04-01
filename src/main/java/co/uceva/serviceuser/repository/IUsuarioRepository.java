@@ -1,7 +1,7 @@
 package co.uceva.serviceuser.repository;
 
 import co.uceva.serviceuser.model.entities.Usuario;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IUsuarioRepository extends CrudRepository<Usuario, Long> {
+public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
 }

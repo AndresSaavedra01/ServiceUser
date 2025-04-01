@@ -3,6 +3,9 @@ package co.uceva.serviceuser.controller;
 import co.uceva.serviceuser.model.entities.Usuario;
 import co.uceva.serviceuser.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -17,6 +20,13 @@ public class UsuarioRestController {
     public UsuarioRestController(IUsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
+    @GetMapping("/usuario/page/{page}")
+    public Page<Usuario> index(@PathVariable Integer page) {
+        Pageable pageable = PageRequest.of(page, 4);
+        return usuarioService.findAll(pageable);
+    }
+
     @GetMapping("/usuarios")
     public List<Usuario> getUsuarios() {
         return usuarioService.findAll();
