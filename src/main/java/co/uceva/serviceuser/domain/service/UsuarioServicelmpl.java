@@ -1,8 +1,7 @@
-package co.uceva.serviceuser.service;
+package co.uceva.serviceuser.domain.service;
 
-import co.uceva.serviceuser.model.entities.Usuario;
-import co.uceva.serviceuser.repository.IUsuarioRepository;
-import jakarta.validation.constraints.NotNull;
+import co.uceva.serviceuser.domain.model.Usuario;
+import co.uceva.serviceuser.domain.repository.IUsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioServicelmpl implements IUsuarioService {
@@ -28,8 +28,8 @@ public class UsuarioServicelmpl implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public Usuario findById(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
+    public Optional<Usuario> findById(Long id) {
+        return usuarioRepository.findById(id);
     }
 
     @Override

@@ -1,8 +1,7 @@
-package co.uceva.serviceuser.model.entities;
+package co.uceva.serviceuser.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ public class Usuario {
     private Long id;
 
     @NotEmpty(message ="No puede estar vacio")
-    @Size(min=2, max=20, message="El tamaño tiene que estar entre 2 y 20")
+    @Size(min=2, max=100, message="El tamaño tiene que estar entre 2 y 100")
     @Column(nullable=false)
     private String nombreCompleto;
 
