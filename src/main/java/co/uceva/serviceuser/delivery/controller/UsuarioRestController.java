@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/usuario-service")
 public class UsuarioRestController {
     private final IUsuarioService usuarioService;
-
+    List<Usuario> Usuarios;
 
     private static final String MENSAJE = "mesaje";
     private static final String USUARIO = "usuario";
@@ -34,11 +34,12 @@ public class UsuarioRestController {
     public UsuarioRestController(IUsuarioService usuarioService) {
         this.usuarioService = usuarioService;
 
+
     }
 
     @GetMapping("/usuarios")
     public ResponseEntity<Map<String, Object>> getUsuarios() {
-        List<Usuario> Usuarios = usuarioService.findAll();
+        Usuarios = findAllUsers();
         if (Usuarios.isEmpty()) {
             throw new NoHayUsuariosException();
         }
@@ -46,6 +47,83 @@ public class UsuarioRestController {
         response.put(USUARIOS, Usuarios);
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/usuarios/docentes")
+    public ResponseEntity<Map<String, Object>> getDocentes() {
+        Usuarios = findAllUsers();
+        if (Usuarios.isEmpty()) {
+            throw new NoHayUsuariosException();
+        }
+        Map<String, Object> response = new HashMap<>();
+        List<Usuario> docentes = Usuarios.stream().filter(usuario -> usuario.getRol().equals(Usuario.Rol.DOCENTE)).toList();
+        if (docentes.isEmpty()) {
+            throw new RuntimeException("No hay usuarios con rol de docente");
+        }
+        response.put(USUARIOS, docentes);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/usuarios/coordinadores")
+    public ResponseEntity<Map<String, Object>> getCoordinadores() {
+        Usuarios = findAllUsers();
+        if (Usuarios.isEmpty()) {
+            throw new NoHayUsuariosException();
+        }
+        Map<String, Object> response = new HashMap<>();
+        List<Usuario> coordinadores = Usuarios.stream().filter(usuario -> usuario.getRol().equals(Usuario.Rol.COORDINADOR)).toList();
+        if (coordinadores.isEmpty()) {
+            throw new RuntimeException("No hay usuarios con rol de coordinador");
+        }
+        response.put(USUARIOS, coordinadores);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/usuarios/estudiantes")
+    public ResponseEntity<Map<String, Object>> getEstudiantes() {
+        Usuarios = findAllUsers();
+        if (Usuarios.isEmpty()) {
+            throw new NoHayUsuariosException();
+        }
+        Map<String, Object> response = new HashMap<>();
+        List<Usuario> estudiantes = Usuarios.stream().filter(usuario -> usuario.getRol().equals(Usuario.Rol.ESTUDIANTE)).toList();
+        if (estudiantes.isEmpty()) {
+            throw new RuntimeException("No hay usuarios con rol de estudiante");
+        }
+        response.put(USUARIOS, estudiantes);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/usuarios/decanos")
+    public ResponseEntity<Map<String, Object>> getDecano() {
+        Usuarios = findAllUsers();
+        if (Usuarios.isEmpty()) {
+            throw new NoHayUsuariosException();
+        }
+        Map<String, Object> response = new HashMap<>();
+        List<Usuario> decano = Usuarios.stream().filter(usuario -> usuario.getRol().equals(Usuario.Rol.DECANO)).toList();
+        if (decano.isEmpty()) {
+            throw new RuntimeException("No hay usuarios con rol de decano");
+        }
+        response.put(USUARIOS, decano);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/usuarios/administradores")
+    public ResponseEntity<Map<String, Object>> getAdministrador() {
+        Usuarios = findAllUsers();
+        if (Usuarios.isEmpty()) {
+            throw new NoHayUsuariosException();
+        }
+        Map<String, Object> response = new HashMap<>();
+        List<Usuario> admin = Usuarios.stream().filter(usuario -> usuario.getRol().equals(Usuario.Rol.ADMINISTRADOR)).toList();
+        if (admin.isEmpty()) {
+            throw new RuntimeException("No hay usuarios con rol de administradores");
+        }
+        response.put(USUARIOS, admin);
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/usuario/page/{page}")
     public ResponseEntity<Object> index(@PathVariable Integer page) {
@@ -85,5 +163,9 @@ public class UsuarioRestController {
         response.put(MENSAJE, "El usuario con el id: " + id + " existe");
         response.put(USUARIO, usuario);
         return ResponseEntity.ok(response);
+    }
+
+    public List<Usuario> findAllUsers() {
+        return usuarioService.findAll();
     }
 }
