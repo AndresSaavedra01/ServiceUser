@@ -21,7 +21,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     password: a1b2c3d4
     username: devdb
-    url: jdbc:postgresql://localhost:5432/user
+    url: jdbc:postgresql://localhost:5432/curso_springboot
   jpa:
     hibernate:
       ddl-auto: create-drop
