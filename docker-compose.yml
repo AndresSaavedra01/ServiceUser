@@ -1,31 +1,167 @@
-version: '3.8'
-
 services:
-  serviceuser:
-    image: andres727/serviceuser
+  usuario-service:
+    container_name: usuario-service
+    image: andres727/usuario-service
     ports:
       - "8080:8080"
+      - "8081:8081"
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user
-      SPRING_DATASOURCE_USERNAME: devdb
-      SPRING_DATASOURCE_PASSWORD: a1b2c3d4
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      ACT_PORT: 8081
+      PORT: 8080
+      EUREKA_HOST: eurekaserver
+    networks:
+      - backend
+
+  semestre-service:
+    container_name: semestre-service
+    image: andres727/semestre-service
+    ports:
+      - "8082:8080"
+      - "8083:8081"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      ACT_PORT: 8081
+      PORT: 8080
+      EUREKA_HOST: eurekaserver
+    networks:
+      - backend
+
+  curso-service:
+    container_name: curso-service
+    image: andres727/curso-service
+    ports:
+      - "8084:8080"
+      - "8085:8081"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      ACT_PORT: 8081
+      PORT: 8080
+      EUREKA_HOST: eurekaserver
+    #  USUARIO_PORT: 8080
+     # USUARIO_HOST: usuario-service
+     # SEMESTRE_PORT: 8082
+     # SEMESTRE_HOST: semestre-service
+
+    networks:
+      - backend
+
+  ova-service:
+    container_name: ova-service
+    image: andres727/ova-service
+    ports:
+      - "8086:8080"
+      - "8087:8081"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      PORT: 8080
+      ACT_PORT: 8081
+      EUREKA_HOST: eurekaserver
+     # TARGET_HOST: curso-service
+     # TARGET_PORT: 8084
+
+    networks:
+      - backend
+
+  programa-service:
+    container_name: programa-service
+    image: sebasmo/programa-service:latest
+    ports:
+      - "8088:8080"
+      - "8089:8081"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      PORT: 8080
+      ACT_PORT: 8081
+      EUREKA_HOST: eurekaserver
+      # TARGET_HOST: curso-service
+      # TARGET_PORT: 8084
+
+    networks:
+      - backend
+
+  facultad-service:
+    container_name: facultad-service
+    image: sebasmo/facultad-service:latest
+    ports:
+      - "8090:8080"
+      - "8091:8081"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
+      PORT: 8080
+      ACT_PORT: 8081
+      EUREKA_HOST: eurekaserver
+      # TARGET_HOST: curso-service
+      # TARGET_PORT: 8084
+
+    networks:
+      - backend
+
+  eureka-server:
+    image: andresguevara03/eurekaserver:latest
+    container_name: eurekaserver
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
     networks:
       - backend
 
   postgres:
-    image: postgres:15
+    image: postgres:latest
+    container_name: postgres
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: user
-      POSTGRES_USER: devdb
-      POSTGRES_PASSWORD: a1b2c3d4
+      DB_HOST: curso_springboot
+      DB_USER: devdb
+      DB_PASS: a1b2c3d4
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - backend
+
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: nginx-gateway
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - usuario-service
+      - semestre-service
+      - curso-service
+      - ova-service
+      - programa-service
+      - facultad-service
+      - eureka-server
+    networks:
+      - backend
+
 
 volumes:
   pgdata:
